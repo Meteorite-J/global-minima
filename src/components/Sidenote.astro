@@ -1,0 +1,19 @@
+---
+/**
+ * <Sidenote> — Tufte-style margin note for MDX posts.
+ *
+ * Usage in .mdx:
+ *   import Sidenote from '../../components/Sidenote.astro';
+ *   ...text... <Sidenote>This appears in the right gutter on wide screens.</Sidenote>
+ *
+ * On screens >= 1120px: floats into the right gutter via CSS float + negative margin.
+ * On narrower screens: renders as an inline block note below the surrounding text.
+ *
+ * The .post-container must be wider than the prose column to give the float room.
+ * See global.css for the sidenote positioning rules.
+ */
+---
+
+<aside class="sidenote" role="note">
+  <slot />
+</aside>

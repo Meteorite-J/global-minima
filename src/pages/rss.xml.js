@@ -1,0 +1,22 @@
+import rss from '@astrojs/rss';
+import { getCollection } from 'astro:content';
+
+export async function GET(context) {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+
+  return rss({
+    title: 'Global Minima',
+    description: 'Personal essays and technical writing.',
+    site: context.site,
+    items: posts.map((post) => ({
+      title: post.data.title,
+      pubDate: post.data.pubDate,
+      description: post.data.description,
+      // context.site already includes the base path via astro.config site
+      link: `/blog/${post.id.replace(/\.(mdx?)$/, '')}/`,
+    })),
+    customData: `<language>en-us</language>`,
+  });
+}

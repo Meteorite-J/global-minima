@@ -1,0 +1,952 @@
+/* Tailwind v4: CSS-first config — no tailwind.config.js needed */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+ * Runtime CSS custom properties for theming.
+ * Using plain :root vars (not @theme) so dark mode overrides work
+ * without JavaScript — @theme emits static values at build time.
+ *
+ * Palette: "Dune"
+ * Light — House Atreides: arrakeen sand, spice ink, Fremen blue-eyes
+ * Dark  — House Harkonnen: Giedi Prime void, industrial, baron's crimson
+ */
+:root {
+  --bg:          #F5EAD0;   /* bleached Arrakeen noon — more golden, less orange */
+  --text:        #1A1106;   /* warm near-black, deeper contrast */
+  --muted:       #8A7355;   /* tan-khaki sandstone, less greenish */
+  --border:      #D4C49E;   /* dune ridge shadow — crisper separation */
+  --accent:      #1A4A99;   /* Fremen cobalt-blue — more saturated */
+  --code-bg:     #DDD0B5;   /* tighter delta from --bg for inline code readability */
+  --code-text:   #2A1C08;
+
+  /* Spice (melange) motif variables */
+  --spice:       #B87333;   /* copper-orange — raw spice color from harvester scenes */
+  --spice-glow:  #B8733308; /* near-transparent warm tint for atmospheric background */
+
+  /* Per-theme tag corner radius */
+  --tag-radius:  4px;       /* organic desert-eroded rounding for House Atreides */
+
+  /* Shared content column width — header, page body, and footer all align to this */
+  --site-width: 800px;
+
+  /*
+   * Reusable gradient separator: a hairline that fades at both ends.
+   * Used by sidenotes, nav, post-header, footer, year-headings, essays-items.
+   * Defined here so dark-mode overrides to --border automatically update it.
+   */
+  --gradient-sep: linear-gradient(to bottom, transparent, var(--border) 15%, var(--border) 85%, transparent);
+}
+
+/* Dark — explicit user override via data-theme="dark" on <html> */
+:root[data-theme="dark"] {
+  --bg:          #080609;   /* deeper void — cool purple-black */
+  --text:        #CCC4D6;   /* pallid Giedi Prime flesh, slightly more lavender */
+  --muted:       #635A6E;   /* violet-shifted industrial gray */
+  --border:      #2E2438;   /* Giedi Prime stone seam — muted cool-purple, clearly legible at 1–2px */
+  --accent:      #8C1220;   /* dried blood — darker, purple-shifted from fresh red */
+  --code-bg:     #110A16;   /* marginally deeper void for code insets */
+  --code-text:   #B8B0C0;
+
+  /* Spice (melange) dark-mode residue */
+  --spice:       #3D1A0A;   /* dark spice residue — processed melange rust */
+  --spice-glow:  #3D1A0A10; /* near-transparent atmospheric tint */
+
+  /* Per-theme tag corner radius */
+  --tag-radius:  1px;       /* near-square machine-stamp, sharp Harkonnen industrial */
+}
+
+/* Dark — system preference (only when user hasn't forced light) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:          #080609;
+    --text:        #CCC4D6;
+    --muted:       #635A6E;
+    --border:      #2E2438;
+    --accent:      #8C1220;
+    --code-bg:     #110A16;
+    --code-text:   #B8B0C0;
+    --spice:       #3D1A0A;
+    --spice-glow:  #3D1A0A10;
+    --tag-radius:  1px;
+  }
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background-color: var(--bg);
+  /*
+   * Spice atmosphere: a barely-perceptible radial gradient above the viewport.
+   * In Atreides mode: warm copper haze (~3% alpha).
+   * In Harkonnen mode: dark rust shadow (~6% alpha).
+   * Purely cosmetic — no paint layer impact.
+   */
+  background-image: radial-gradient(
+    ellipse 80% 50% at 50% -10%,
+    var(--spice-glow),
+    transparent 70%
+  );
+  color: var(--text);
+  /* System serif for body text — avoids FOUT/CLS, matches Gregory Gundersen aesthetic */
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 18px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness 0.15s ease, color 0.15s ease;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ─── Reading progress bar (pure CSS, scroll-driven) ────────────────────── */
+/*
+ * Uses the CSS Scroll-Driven Animations spec (widely supported in modern browsers).
+ * animation-timeline: scroll() drives the animation based on page scroll position.
+ * No JavaScript required.
+ */
+@keyframes reading-progress-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: reading-progress-grow linear;
+  animation-timeline: scroll();
+  z-index: 100;
+  /* Spice-eye glow: cobalt blue (Atreides) or blood-red pulse (Harkonnen) */
+  box-shadow: 0 0 8px 1px var(--accent);
+  /* Fallback: hidden on browsers without scroll-driven animation support */
+}
+
+/* ─── Tailwind Typography prose overrides ───────────────────────────────── */
+/*
+ * Wire the prose CSS variables to our theme vars so dark mode
+ * just works by overriding :root properties above.
+ */
+.prose {
+  --tw-prose-body:          var(--text);
+  --tw-prose-headings:      var(--text);
+  --tw-prose-lead:          var(--muted);
+  --tw-prose-links:         var(--accent);
+  --tw-prose-bold:          var(--text);
+  --tw-prose-counters:      var(--muted);
+  --tw-prose-bullets:       var(--muted);
+  --tw-prose-hr:            var(--border);
+  --tw-prose-quotes:        var(--text);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions:      var(--muted);
+  --tw-prose-code:          var(--code-text);
+  --tw-prose-pre-code:      var(--code-text);
+  --tw-prose-pre-bg:        var(--code-bg);
+  --tw-prose-th-borders:    var(--border);
+  --tw-prose-td-borders:    var(--border);
+
+  /* Enforce reading-optimal line length */
+  max-width: 65ch;
+
+  padding: 0;
+
+  /* Use our serif body font inside prose */
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+/*
+ * Blockquotes styled as Dune chapter epigraphs — centered, italic, framed by
+ * hairline rules above and below. Attribution (in <cite> or a lone <em> as the
+ * last child) renders in small-caps accent color, matching the "— Pardot Kynes,
+ * Planetologist" attribution style from the novels.
+ */
+.prose blockquote {
+  border-left: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 2rem auto;
+  max-width: 80%;
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+  quotes: none;
+  opacity: 1;
+}
+
+/* Hairline rule above — fades at edges like all site dividers */
+.prose blockquote::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin-bottom: 1.25rem;
+}
+
+/* Hairline rule below */
+.prose blockquote::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin-top: 1.25rem;
+}
+
+/* Attribution — <cite> or a lone <em> as the last paragraph in the blockquote */
+.prose blockquote cite,
+.prose blockquote p:last-child em:only-child {
+  display: block;
+  font-style: normal;
+  font-size: 0.78em;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 0.6rem;
+}
+
+/* Remove backtick pseudo-content from inline code */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: '' !important;
+}
+
+.prose :not(pre) > code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+  font-size: 0.875em;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+}
+
+/* Code blocks — background is intentionally NOT overridden here.
+ * Shiki dual-theme emits its own background via CSS variables (--shiki-light-bg /
+ * --shiki-dark-bg) and switches them with prefers-color-scheme automatically.
+ * Overriding background-color would break that mechanism. */
+.prose pre {
+  border: 1px solid var(--border);
+  /* Accent left border gives code blocks a visual anchor in the layout */
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+}
+
+/*
+ * Shiki dual-theme sync with JS theme toggle.
+ *
+ * How Shiki emits token colors:
+ *   Light colors → direct inline `color:#XXXXXX` on each span (inline styles, highest cascade priority)
+ *   Dark colors  → `--shiki-dark:#XXXXXX` CSS custom property on each span
+ *   Light bg     → direct inline `background-color:#XXXXXX` on <pre>
+ *   Dark bg      → `--shiki-dark-bg:#XXXXXX` CSS custom property on <pre>
+ *
+ * Consequence: light mode needs NO stylesheet overrides — inline styles already win.
+ *   We only need rules for dark mode, where `var(--shiki-dark)` must override
+ *   the inline light colors using !important.
+ *
+ * The :not([data-theme="light"]) guard ensures system-dark + explicit-light toggle
+ *   correctly reverts to the inline light values (no dark override applied).
+ */
+
+/* System dark preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .astro-code {
+    background-color: var(--shiki-dark-bg) !important;
+  }
+  :root:not([data-theme="light"]) .astro-code span {
+    color: var(--shiki-dark) !important;
+  }
+}
+
+/* Explicit dark toggle */
+:root[data-theme="dark"] .astro-code {
+  background-color: var(--shiki-dark-bg) !important;
+}
+:root[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark) !important;
+}
+
+/*
+ * Harkonnen dark mode: crimson edge-glow on code blocks.
+ * The leftward box-shadow evokes machinery edge-lighting from Giedi Prime.
+ * Does not touch background-color — Shiki dual-theme mechanism is preserved.
+ */
+:root[data-theme="dark"] .prose pre {
+  box-shadow: -3px 0 10px -2px var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose pre {
+    box-shadow: -3px 0 10px -2px var(--accent);
+  }
+}
+
+/* Sans-serif for headings — system-ui gives a modern contrast to Georgia body */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/*
+ * Sandworm tracks: three parallel hairlines as section dividers.
+ * Evokes the three-ridged track pattern left by sandworm passage
+ * across the Arrakeen desert.
+ */
+.prose hr {
+  border: none;
+  height: 9px;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(var(--border) 1px, transparent 1px);
+  background-size: 100% 1px, 100% 1px, 100% 1px;
+  background-position: top, center, bottom;
+  background-repeat: no-repeat;
+  opacity: 0.55;
+  margin: 2.5rem 0;
+}
+
+/* ─── Drop cap — Dune illuminated initial ───────────────────────────────── */
+/*
+ * The first letter of each post's opening paragraph is enlarged and colored
+ * in the accent — Fremen cobalt (Atreides) or dried-blood crimson (Harkonnen).
+ * Evokes the illuminated initials of archival manuscripts and Dune's own chapter
+ * typesetting. Pure CSS, no markup changes needed in .mdx posts.
+ */
+.prose > p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.78;
+  margin-right: 0.1em;
+  margin-top: 0.05em;
+  color: var(--accent);
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+/* ─── Sidenote ──────────────────────────────────────────────────────────── */
+/*
+ * On wide screens (≥900px): sidenote floats right inside the 800px prose
+ * column. Prose text wraps beside it. No negative margin escape — the note
+ * stays fully within .post-container. On narrow screens: collapses to an
+ * inline block note.
+ */
+.sidenote {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--muted);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@media (min-width: 900px) {
+  .sidenote {
+    float: right;
+    /* 200px note + 1rem gap leaves ~565px (~50ch) for prose beside it */
+    width: 200px;
+    margin-left: 1rem;
+    margin-right: 0;
+    margin-top: 0.2rem;
+    padding-left: 0.875rem;
+    border-left: none;
+    /* Gradient left border via --gradient-sep (fades at top & bottom edges) */
+    /*
+     * Two-layer background: gradient separator hairline on the left edge,
+     * plus a faint spice-atmosphere warm tint (candlelight on parchment).
+     * background-image takes the separator; background-color takes the tint.
+     */
+    background-image: var(--gradient-sep);
+    background-size: 1px 100%;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-color: var(--spice-glow);
+  }
+}
+
+@media (max-width: 899px) {
+  .sidenote {
+    display: block;
+    border-left: 2px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    margin: 0.75rem 0;
+    background-color: transparent;
+  }
+}
+
+/* ─── KaTeX display math ────────────────────────────────────────────────── */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+/* ─── Site header / nav ─────────────────────────────────────────────────── */
+.site-header {
+  padding: 1.25rem 0;
+  margin-bottom: 3rem;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: var(--site-width);
+  margin: 0 auto;
+  padding: 1.25rem 0;
+  /* Gradient separator: fades at edges for a calligraphic, carved quality */
+  position: relative;
+}
+
+/*
+ * Replaces the flat border-bottom with a gradient line that fades at both ends.
+ * The pseudo-element approach keeps the box model identical — no height change.
+ */
+.site-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border) 20%,
+    var(--border) 80%,
+    transparent
+  );
+}
+
+.site-title {
+  font-weight: 800;
+  margin-right: auto;
+}
+
+.site-title:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-nav a {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.25rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.01em; /* barely-perceptible inscribed quality */
+  transition: color 0.15s ease;
+}
+
+.site-nav a:hover {
+  color: var(--text);
+}
+
+/* Active nav link: full ink color + accent underline */
+.site-nav a[aria-current="page"] {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* Theme toggle button — icon button sized to match nav baseline */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  /* Explicit dimensions so the two stacked SVGs crossfade in place */
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+}
+
+/*
+ * Icon crossfade: both SVGs are stacked absolutely inside the button.
+ * Light mode  → show Harkonnen Black Sun  (click → enter darkness)
+ * Dark mode   → show Atreides eagle       (click → return to the light)
+ *
+ * We match the same specificity pattern used for dark-mode variable overrides above.
+ */
+.icon-atreides,
+.icon-harkonnen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Light mode (default — House Atreides): show Atreides symbol */
+.icon-atreides  { opacity: 1; }
+.icon-harkonnen { opacity: 0; }
+
+/* Dark mode via explicit user toggle — House Harkonnen: show Harkonnen symbol */
+:root[data-theme="dark"] .icon-atreides  { opacity: 0; }
+:root[data-theme="dark"] .icon-harkonnen { opacity: 1; }
+
+/* Dark mode via system preference (when user hasn't forced light) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-atreides  { opacity: 0; }
+  :root:not([data-theme="light"]) .icon-harkonnen { opacity: 1; }
+}
+
+/* ─── Post container & layout ───────────────────────────────────────────── */
+.post-container {
+  max-width: var(--site-width);
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.post-header {
+  margin-bottom: 2.5rem;
+  padding: 0 0 1.5rem;
+  position: relative;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Spice atmosphere wash — faint amber (Atreides) or rust (Harkonnen) that fades into page */
+  background: linear-gradient(to bottom, var(--spice-glow), transparent);
+}
+
+.post-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.post-title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800; /* cinematic title-card weight */
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+  color: var(--text);
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/*
+ * Tags styled as House insignia stamps: uppercase, tracked, outlined with no fill.
+ * Atreides mode: 4px organic rounding (--tag-radius). Harkonnen: 1px machine-stamp.
+ * The monospace font + uppercase + letter-spacing reads as archival classification.
+ */
+.tag {
+  font-size: 0.7rem;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--tag-radius);
+  padding: 2px 8px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tag:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ─── Post navigation (prev/next) ───────────────────────────────────────── */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 4rem;
+  padding: 2rem 0 0;
+  position: relative;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.875rem;
+}
+
+.post-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.post-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  max-width: 45%;
+  transition: color 0.15s ease;
+}
+
+.post-nav a:hover { color: var(--accent); }
+.post-nav .nav-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em; /* wayfinding text precision */
+  margin-bottom: 0.25rem;
+  color: var(--muted);
+}
+.post-nav .nav-title { color: var(--text); }
+.post-nav-next { text-align: right; margin-left: auto; }
+
+/* ─── Subscribe block ───────────────────────────────────────────────────── */
+.post-subscribe {
+  margin-top: 3rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--spice-glow);
+  border: 1px solid var(--border);
+  border-radius: var(--tag-radius); /* organic Atreides / sharp Harkonnen */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.post-subscribe-label {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
+
+.post-subscribe-body {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.post-subscribe-form {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-subscribe-fields {
+  display: flex;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.post-subscribe-input {
+  flex: 1;
+  min-width: 10rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--tag-radius);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.post-subscribe-input::placeholder { color: var(--muted); }
+.post-subscribe-input:focus { border-color: var(--accent); }
+
+.post-subscribe-btn {
+  align-self: flex-start;
+  padding: 0.25rem 1rem;
+  font-size: 0.875rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--tag-radius);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.post-subscribe-btn:hover { opacity: 0.85; }
+
+/* ─── Share row ─────────────────────────────────────────────────────────── */
+.post-share {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  position: relative;
+}
+
+/* Gradient separator above share row — consistent with site divider motif */
+.post-share::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.post-share-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Shared styles for share buttons and back-to-top */
+.share-btn,
+.back-to-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--tag-radius);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.share-btn:hover,
+.back-to-top:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ─── Index / post list ─────────────────────────────────────────────────── */
+.page-container {
+  max-width: var(--site-width);
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+/*
+ * .page-heading-row: the Essays label and post count side by side.
+ * The count is faint, providing orientation without cluttering the top.
+ */
+.page-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.page-heading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.page-heading-count {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  color: var(--border);
+  letter-spacing: 0.03em;
+}
+
+/* ─── Site footer ───────────────────────────────────────────────────────── */
+.site-footer {
+  padding: 1.25rem 0;
+  margin-top: 3rem;
+}
+
+.site-footer-inner {
+  max-width: var(--site-width);
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 0;
+  position: relative;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.site-footer-inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.site-footer a:hover { color: var(--accent); }
+
+/* ─── Essays archive (year/month grouped) ──────────────────────────────── */
+
+.year-section {
+  margin-bottom: 2.75rem;
+}
+
+/*
+ * Year heading: bold sans label with a thin rule underneath —
+ * acts as a visual chapter divider across the archival index.
+ */
+.year-heading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.year-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/*
+ * Month label: monospace uppercase, faint — subordinate to the year,
+ * provides grouping without competing for attention with post titles.
+ */
+.month-section {
+  margin-top: 0.5rem;
+}
+
+.month-heading {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+}
+
+.essays-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.essays-item {
+  padding: 0.5rem 0;
+  margin: 0;
+  position: relative;
+}
+
+.essays-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.essays-item:last-child::after {
+  display: none;
+}
+
+
+.essays-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.essays-title {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  line-height: 1.35;
+}
+
+.essays-title:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.essays-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/*
+ * Superscript post-count badge on year/month headings.
+ * Monospace + muted so it reads as annotation, not heading text.
+ */
+.essays-count {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+  vertical-align: super;
+  margin-left: 0.25em;
+}
+
+/*
+ * Timestamp + reading time under each essay title.
+ * flex-basis: 100% forces it onto its own line within the flex title row.
+ */
+.essays-meta {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+  flex-basis: 100%;
+  margin-top: 0.1rem;
+}
+

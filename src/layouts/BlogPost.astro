@@ -1,0 +1,143 @@
+---
+import Layout from './Layout.astro';
+import { formatDate, readingTime } from '../utils/reading-time';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  prev?: { slug: string; title: string } | null;
+  next?: { slug: string; title: string } | null;
+}
+
+const { post, prev, next } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, ogImage } = post.data;
+const mins = readingTime(post.body ?? '');
+const base = import.meta.env.BASE_URL;
+
+// Share URLs
+const postUrl       = new URL(Astro.url.pathname, Astro.site).toString();
+const encodedUrl    = encodeURIComponent(postUrl);
+const encodedTitle  = encodeURIComponent(title);
+const shareLinkedIn = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}`;
+const shareX        = `https://x.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+const shareEmail    = `mailto:?subject=${encodedTitle}&body=${encodedUrl}`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  pubDate={pubDate}
+  ogType="article"
+  showProgress={true}
+>
+  <main class="post-container">
+    <article>
+      <header class="post-header">
+        <h1 class="post-title">{title}</h1>
+        <div class="post-meta">
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          <span>·</span>
+          <span>{mins} min read</span>
+          {updatedDate && (
+            <>
+              <span>·</span>
+              <span>Updated {formatDate(updatedDate)}</span>
+            </>
+          )}
+          {tags.length > 0 && (
+            <>
+              <span>·</span>
+              <div class="post-tags">
+                {tags.map((tag) => (
+                  <a href={`${base}/tags/${tag}`} class="tag">{tag}</a>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </header>
+
+      <!-- prose class applies Tailwind Typography styles -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- Subscribe -->
+      <div class="post-subscribe">
+        <p class="post-subscribe-label">Communinet</p>
+        <p class="post-subscribe-body">Nerdy content straight to your inbox. Pure signal. Zero fluff.</p>
+        {/* Replace the action URL with your email provider's endpoint (e.g. Formspree, Buttondown, ConvertKit) */}
+        <form class="post-subscribe-form" action="#" method="POST">
+          <div class="post-subscribe-fields">
+            <input
+              class="post-subscribe-input"
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              autocomplete="given-name"
+              required
+            />
+            <input
+              class="post-subscribe-input"
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              autocomplete="email"
+              required
+            />
+          </div>
+          <button class="post-subscribe-btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+
+      <!-- Share + Back to Top -->
+      <div class="post-share">
+        <div class="post-share-buttons">
+          <!-- LinkedIn -->
+          <a href={shareLinkedIn} class="share-btn" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <!-- X -->
+          <a href={shareX} class="share-btn" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <!-- Email -->
+          <a href={shareEmail} class="share-btn" aria-label="Share via email">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4.236-8 4.882-8-4.882V6h16v2.236z"/>
+            </svg>
+          </a>
+        </div>
+        <!-- Back to top -->
+        <a href="#top" class="back-to-top" aria-label="Back to top">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path d="M12 4 4 12h5v8h6v-8h5z"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Prev / Next navigation -->
+      {(prev || next) && (
+        <nav class="post-nav" aria-label="Post navigation">
+          {prev ? (
+            <a href={`${base}/blog/${prev.slug}`}>
+              <span class="nav-label">← Previous</span>
+              <span class="nav-title">{prev.title}</span>
+            </a>
+          ) : <span />}
+          {next && (
+            <a href={`${base}/blog/${next.slug}`} class="post-nav-next">
+              <span class="nav-label">Next →</span>
+              <span class="nav-title">{next.title}</span>
+            </a>
+          )}
+        </nav>
+      )}
+    </article>
+  </main>
+</Layout>

@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About" description="About this blog and its author.">
+  <main class="page-container">
+    <article class="prose">
+      <h1>About</h1>
+
+      <p>
+        This is a personal blog for essays, notes, and technical writing.
+        The design prioritises the reading experience above everything else —
+        no popups, no tracking, no clutter. Just text.
+      </p>
+
+      <h2>Writing here</h2>
+
+      <p>
+        Posts cover whatever I find interesting: software, systems, mathematics,
+        and occasionally things that resist easy categorisation.
+      </p>
+
+      <h2>Colophon</h2>
+
+      <p>
+        Built with <a href="https://astro.build">Astro</a>, styled with{' '}
+        <a href="https://tailwindcss.com">Tailwind CSS v4</a>, and deployed
+        via GitHub Pages. Body text is set in Georgia. Headings use the system
+        sans-serif stack. Math is rendered with{' '}
+        <a href="https://katex.org">KaTeX</a>. Code is highlighted at build
+        time with <a href="https://shiki.style">Shiki</a>. The theme toggle
+        ships a small inline script; everything else is CSS-only.
+      </p>
+    </article>
+  </main>
+</Layout>

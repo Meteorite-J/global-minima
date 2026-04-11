@@ -1,0 +1,74 @@
+---
+title: 'On Writing Technically'
+pubDate: 2026-04-05
+description: 'Why precision and clarity are not opposites, and how to write technical content that respects the reader.'
+tags: ['writing', 'craft']
+draft: false
+---
+
+import Sidenote from '../../components/Sidenote.astro';
+
+There is a widespread belief that technical writing must be dry — that rigour
+demands dullness. This belief is wrong, and acting on it produces prose that
+obscures more than it reveals.
+
+## The clarity paradox
+
+<Sidenote>
+  Richard Feynman was famous for demanding plain-language explanations. If you
+  couldn't explain something simply, he argued, you didn't understand it yet.
+</Sidenote>
+
+Precision and clarity are not in tension. A sentence that says exactly what it
+means — no more, no less — is both more rigorous and easier to read than one
+hedged with qualifications and passive constructions.
+
+The impulse toward complexity often comes from insecurity. We use jargon to
+signal membership in a community, and passive voice to avoid accountability.
+Neither serves the reader.
+
+## What the reader actually needs
+
+A reader approaching a technical document has one goal: to build a correct
+mental model of something they did not previously understand. Every sentence
+either advances that goal or wastes their time.
+
+Concretely, this means:
+
+1. **Start with the conclusion.** The reader should know what they are about to
+   learn before they learn it. Front-load the key insight.
+
+2. **Use examples early.** Abstract definitions without examples are
+   memorisable but not understandable. The example is the thing; the definition
+   is just a compact reference.
+
+3. **Define terms once, then use them consistently.** Synonyms in technical
+   writing create ambiguity. If you call it a "context" on page one, call it a
+   "context" on page ten.
+
+## On mathematics
+
+Mathematical notation is the most efficient language humans have invented for
+a certain class of ideas. But it requires translation.
+
+A formula like $\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}$ is not
+self-explanatory to someone who has not internalised the notation. The writer's
+job is to bridge the formal and the intuitive:
+
+> This says that electric field lines can only start or end on charges. Where
+> there is no charge, field lines flow through without diverging.
+
+The mathematical statement and the prose statement are the same idea in two
+registers. Use both.
+
+## The discipline
+
+Writing clearly about technical subjects is harder than writing obscurely. It
+requires you to understand something well enough to explain it without
+scaffolding — without the jargon that substitutes for understanding.
+
+That difficulty is the point. The act of writing clearly *is* the act of
+thinking clearly. A confused sentence usually indicates a confused thought.
+Fixing the sentence often fixes the thought.
+
+Write for the reader who is as smart as you but does not yet know what you know.

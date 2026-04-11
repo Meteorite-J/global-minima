@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { formatDate, readingTime, getSlug } from '../../utils/reading-time';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  // Collect all unique tags
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title={`#${tag}`}
+  description={`All posts tagged "${tag}"`}
+>
+  <main class="page-container">
+    <p style="font-family: system-ui, sans-serif; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">
+      <a href={base || '/'} style="color: var(--muted);">← All essays</a>
+    </p>
+    <h1 class="page-heading">#{tag}</h1>
+
+    <ol class="post-list" reversed>
+      {posts.map((post) => {
+        const mins = readingTime(post.body ?? '');
+        return (
+          <li class="post-list-item">
+            <h2 class="post-list-title">
+              <a href={`${base}/blog/${getSlug(post.id)}`}>{post.data.title}</a>
+            </h2>
+            <p class="post-list-meta">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate)}
+              </time>
+              {' · '}{mins} min read
+            </p>
+            {post.data.description && (
+              <p class="post-list-desc">{post.data.description}</p>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </main>
+</Layout>
