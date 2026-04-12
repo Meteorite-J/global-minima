@@ -12,7 +12,7 @@ interface Props {
 const { post, prev, next } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, ogImage } = post.data;
 const mins = readingTime(post.body ?? '');
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // Share URLs
 const postUrl       = new URL(Astro.url.pathname, Astro.site).toString();
