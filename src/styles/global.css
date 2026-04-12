@@ -12,20 +12,29 @@
  * Dark  — House Harkonnen: Giedi Prime void, industrial, baron's crimson
  */
 :root {
-  --bg:          #F5EAD0;   /* bleached Arrakeen noon — more golden, less orange */
-  --text:        #1A1106;   /* warm near-black, deeper contrast */
-  --muted:       #8A7355;   /* tan-khaki sandstone, less greenish */
-  --border:      #D4C49E;   /* dune ridge shadow — crisper separation */
-  --accent:      #1A4A99;   /* Fremen cobalt-blue — more saturated */
-  --code-bg:     #DDD0B5;   /* tighter delta from --bg for inline code readability */
-  --code-text:   #2A1C08;
+  --bg: #F5EAD0;
+  /* bleached Arrakeen noon — more golden, less orange */
+  --text: #1A1106;
+  /* warm near-black, deeper contrast */
+  --muted: #8A7355;
+  /* tan-khaki sandstone, less greenish */
+  --border: #D4C49E;
+  /* dune ridge shadow — crisper separation */
+  --accent: #1A4A99;
+  /* Fremen cobalt-blue — more saturated */
+  --code-bg: #DDD0B5;
+  /* tighter delta from --bg for inline code readability */
+  --code-text: #2A1C08;
 
   /* Spice (melange) motif variables */
-  --spice:       #B87333;   /* copper-orange — raw spice color from harvester scenes */
-  --spice-glow:  #B8733308; /* near-transparent warm tint for atmospheric background */
+  --spice: #B87333;
+  /* copper-orange — raw spice color from harvester scenes */
+  --spice-glow: #B8733308;
+  /* near-transparent warm tint for atmospheric background */
 
   /* Per-theme tag corner radius */
-  --tag-radius:  4px;       /* organic desert-eroded rounding for House Atreides */
+  --tag-radius: 4px;
+  /* organic desert-eroded rounding for House Atreides */
 
   /* Shared content column width — header, page body, and footer all align to this */
   --site-width: 800px;
@@ -40,41 +49,54 @@
 
 /* Dark — explicit user override via data-theme="dark" on <html> */
 :root[data-theme="dark"] {
-  --bg:          #080609;   /* deeper void — cool purple-black */
-  --text:        #CCC4D6;   /* pallid Giedi Prime flesh, slightly more lavender */
-  --muted:       #635A6E;   /* violet-shifted industrial gray */
-  --border:      #2E2438;   /* Giedi Prime stone seam — muted cool-purple, clearly legible at 1–2px */
-  --accent:      #8C1220;   /* dried blood — darker, purple-shifted from fresh red */
-  --code-bg:     #110A16;   /* marginally deeper void for code insets */
-  --code-text:   #B8B0C0;
+  --bg: #080609;
+  /* deeper void — cool purple-black */
+  --text: #CCC4D6;
+  /* pallid Giedi Prime flesh, slightly more lavender */
+  --muted: #635A6E;
+  /* violet-shifted industrial gray */
+  --border: #2E2438;
+  /* Giedi Prime stone seam — muted cool-purple, clearly legible at 1–2px */
+  --accent: #8C1220;
+  /* dried blood — darker, purple-shifted from fresh red */
+  --code-bg: #110A16;
+  /* marginally deeper void for code insets */
+  --code-text: #B8B0C0;
 
   /* Spice (melange) dark-mode residue */
-  --spice:       #3D1A0A;   /* dark spice residue — processed melange rust */
-  --spice-glow:  #3D1A0A10; /* near-transparent atmospheric tint */
+  --spice: #3D1A0A;
+  /* dark spice residue — processed melange rust */
+  --spice-glow: #3D1A0A10;
+  /* near-transparent atmospheric tint */
 
   /* Per-theme tag corner radius */
-  --tag-radius:  1px;       /* near-square machine-stamp, sharp Harkonnen industrial */
+  --tag-radius: 1px;
+  /* near-square machine-stamp, sharp Harkonnen industrial */
 }
 
 /* Dark — system preference (only when user hasn't forced light) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:          #080609;
-    --text:        #CCC4D6;
-    --muted:       #635A6E;
-    --border:      #2E2438;
-    --accent:      #8C1220;
-    --code-bg:     #110A16;
-    --code-text:   #B8B0C0;
-    --spice:       #3D1A0A;
-    --spice-glow:  #3D1A0A10;
-    --tag-radius:  1px;
+    --bg: #080609;
+    --text: #CCC4D6;
+    --muted: #635A6E;
+    --border: #2E2438;
+    --accent: #8C1220;
+    --code-bg: #110A16;
+    --code-text: #B8B0C0;
+    --spice: #3D1A0A;
+    --spice-glow: #3D1A0A10;
+    --tag-radius: 1px;
   }
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
   background-color: var(--bg);
@@ -84,11 +106,9 @@ html {
    * In Harkonnen mode: dark rust shadow (~6% alpha).
    * Purely cosmetic — no paint layer impact.
    */
-  background-image: radial-gradient(
-    ellipse 80% 50% at 50% -10%,
-    var(--spice-glow),
-    transparent 70%
-  );
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%,
+      var(--spice-glow),
+      transparent 70%);
   color: var(--text);
   /* System serif for body text — avoids FOUT/CLS, matches Gregory Gundersen aesthetic */
   font-family: Georgia, 'Times New Roman', Times, serif;
@@ -121,8 +141,13 @@ a:hover {
  * No JavaScript required.
  */
 @keyframes reading-progress-grow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
 }
 
 .reading-progress {
@@ -148,22 +173,22 @@ a:hover {
  * just works by overriding :root properties above.
  */
 .prose {
-  --tw-prose-body:          var(--text);
-  --tw-prose-headings:      var(--text);
-  --tw-prose-lead:          var(--muted);
-  --tw-prose-links:         var(--accent);
-  --tw-prose-bold:          var(--text);
-  --tw-prose-counters:      var(--muted);
-  --tw-prose-bullets:       var(--muted);
-  --tw-prose-hr:            var(--border);
-  --tw-prose-quotes:        var(--text);
+  --tw-prose-body: var(--text);
+  --tw-prose-headings: var(--text);
+  --tw-prose-lead: var(--muted);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--text);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--text);
   --tw-prose-quote-borders: var(--border);
-  --tw-prose-captions:      var(--muted);
-  --tw-prose-code:          var(--code-text);
-  --tw-prose-pre-code:      var(--code-text);
-  --tw-prose-pre-bg:        var(--code-bg);
-  --tw-prose-th-borders:    var(--border);
-  --tw-prose-td-borders:    var(--border);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--code-text);
+  --tw-prose-pre-code: var(--code-text);
+  --tw-prose-pre-bg: var(--code-bg);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
 
   /* Enforce reading-optimal line length */
   max-width: 65ch;
@@ -224,12 +249,12 @@ a:hover {
 }
 
 /* Remove backtick pseudo-content from inline code */
-.prose :not(pre) > code::before,
-.prose :not(pre) > code::after {
+.prose :not(pre)>code::before,
+.prose :not(pre)>code::after {
   content: '' !important;
 }
 
-.prose :not(pre) > code {
+.prose :not(pre)>code {
   background-color: var(--code-bg);
   color: var(--code-text);
   padding: 0.15em 0.35em;
@@ -272,6 +297,7 @@ a:hover {
   :root:not([data-theme="light"]) .astro-code {
     background-color: var(--shiki-dark-bg) !important;
   }
+
   :root:not([data-theme="light"]) .astro-code span {
     color: var(--shiki-dark) !important;
   }
@@ -281,6 +307,7 @@ a:hover {
 :root[data-theme="dark"] .astro-code {
   background-color: var(--shiki-dark-bg) !important;
 }
+
 :root[data-theme="dark"] .astro-code span {
   color: var(--shiki-dark) !important;
 }
@@ -301,7 +328,10 @@ a:hover {
 }
 
 /* Sans-serif for headings — system-ui gives a modern contrast to Georgia body */
-.prose h1, .prose h2, .prose h3, .prose h4 {
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   letter-spacing: -0.02em;
 }
@@ -332,7 +362,7 @@ a:hover {
  * Evokes the illuminated initials of archival manuscripts and Dune's own chapter
  * typesetting. Pure CSS, no markup changes needed in .mdx posts.
  */
-.prose > p:first-of-type::first-letter {
+.prose>p:first-of-type::first-letter {
   float: left;
   font-size: 3.2em;
   line-height: 0.78;
@@ -400,7 +430,7 @@ a:hover {
 /* ─── Site header / nav ─────────────────────────────────────────────────── */
 .site-header {
   padding: 1.25rem 0;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .site-nav {
@@ -425,13 +455,11 @@ a:hover {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--border) 20%,
-    var(--border) 80%,
-    transparent
-  );
+  background: linear-gradient(to right,
+      transparent,
+      var(--border) 20%,
+      var(--border) 80%,
+      transparent);
 }
 
 .site-title {
@@ -449,7 +477,8 @@ a:hover {
   font-size: 1.25rem;
   color: var(--muted);
   text-decoration: none;
-  letter-spacing: 0.01em; /* barely-perceptible inscribed quality */
+  letter-spacing: 0.01em;
+  /* barely-perceptible inscribed quality */
   transition: color 0.15s ease;
 }
 
@@ -501,24 +530,38 @@ a:hover {
 }
 
 /* Light mode (default — House Atreides): show Atreides symbol */
-.icon-atreides  { opacity: 1; }
-.icon-harkonnen { opacity: 0; }
+.icon-atreides {
+  opacity: 1;
+}
+
+.icon-harkonnen {
+  opacity: 0;
+}
 
 /* Dark mode via explicit user toggle — House Harkonnen: show Harkonnen symbol */
-:root[data-theme="dark"] .icon-atreides  { opacity: 0; }
-:root[data-theme="dark"] .icon-harkonnen { opacity: 1; }
+:root[data-theme="dark"] .icon-atreides {
+  opacity: 0;
+}
+
+:root[data-theme="dark"] .icon-harkonnen {
+  opacity: 1;
+}
 
 /* Dark mode via system preference (when user hasn't forced light) */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .icon-atreides  { opacity: 0; }
-  :root:not([data-theme="light"]) .icon-harkonnen { opacity: 1; }
+  :root:not([data-theme="light"]) .icon-atreides {
+    opacity: 0;
+  }
+
+  :root:not([data-theme="light"]) .icon-harkonnen {
+    opacity: 1;
+  }
 }
 
 /* ─── Post container & layout ───────────────────────────────────────────── */
 .post-container {
   max-width: var(--site-width);
   margin: 0 auto;
-  padding: 3rem 0;
 }
 
 .post-header {
@@ -542,7 +585,8 @@ a:hover {
 
 .post-title {
   font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 800; /* cinematic title-card weight */
+  font-weight: 800;
+  /* cinematic title-card weight */
   line-height: 1.2;
   letter-spacing: -0.03em;
   margin: 0 0 0.75rem;
@@ -594,8 +638,7 @@ a:hover {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  margin-top: 4rem;
-  padding: 2rem 0 0;
+  padding: 1.25rem 0 0;
   position: relative;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 0.875rem;
@@ -618,25 +661,35 @@ a:hover {
   transition: color 0.15s ease;
 }
 
-.post-nav a:hover { color: var(--accent); }
+.post-nav a:hover {
+  color: var(--accent);
+}
+
 .post-nav .nav-label {
   display: block;
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em; /* wayfinding text precision */
+  letter-spacing: 0.08em;
+  /* wayfinding text precision */
   margin-bottom: 0.25rem;
   color: var(--muted);
 }
-.post-nav .nav-title { color: var(--text); }
-.post-nav-next { text-align: right; margin-left: auto; }
 
-/* ─── Subscribe block ───────────────────────────────────────────────────── */
-.post-subscribe {
-  margin-top: 3rem;
-  padding: 1.25rem 1.5rem;
-  background: var(--spice-glow);
-  border: 1px solid var(--border);
-  border-radius: var(--tag-radius); /* organic Atreides / sharp Harkonnen */
+.post-nav .nav-title {
+  color: var(--text);
+}
+
+.post-nav-next {
+  text-align: right;
+  margin-left: auto;
+}
+
+/* ─── Subscribe + Share block ──────────────────────────────────────────── */
+.post-subscribe-share {
+  margin-top: 1.5rem;
+  padding: 1.25rem 0rem;
+  background: linear-gradient(to top, var(--spice-glow), transparent);
+  /* organic Atreides / sharp Harkonnen */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -656,9 +709,6 @@ a:hover {
 
 .post-subscribe-form {
   margin-top: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 .post-subscribe-fields {
@@ -680,12 +730,18 @@ a:hover {
   outline: none;
   transition: border-color 0.15s ease;
 }
-.post-subscribe-input::placeholder { color: var(--muted); }
-.post-subscribe-input:focus { border-color: var(--accent); }
+
+.post-subscribe-input::placeholder {
+  color: var(--muted);
+}
+
+.post-subscribe-input:focus {
+  border-color: var(--accent);
+}
 
 .post-subscribe-btn {
-  align-self: flex-start;
-  padding: 0.25rem 1rem;
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 500;
@@ -696,27 +752,23 @@ a:hover {
   cursor: pointer;
   transition: opacity 0.15s ease;
 }
-.post-subscribe-btn:hover { opacity: 0.85; }
+
+.post-subscribe-btn:hover {
+  opacity: 0.85;
+}
 
 /* ─── Share row ─────────────────────────────────────────────────────────── */
 .post-share {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-top: 1.25rem;
   padding-top: 1.25rem;
   position: relative;
 }
 
-/* Gradient separator above share row — consistent with site divider motif */
-.post-share::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+.post-share-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .post-share-buttons {
@@ -786,7 +838,7 @@ a:hover {
 /* ─── Site footer ───────────────────────────────────────────────────────── */
 .site-footer {
   padding: 1.25rem 0;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 }
 
 .site-footer-inner {
@@ -819,7 +871,9 @@ a:hover {
   transition: color 0.15s ease;
 }
 
-.site-footer a:hover { color: var(--accent); }
+.site-footer a:hover {
+  color: var(--accent);
+}
 
 /* ─── Essays archive (year/month grouped) ──────────────────────────────── */
 
@@ -949,4 +1003,3 @@ a:hover {
   flex-basis: 100%;
   margin-top: 0.1rem;
 }
-
