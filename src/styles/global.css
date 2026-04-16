@@ -1003,3 +1003,176 @@ a:hover {
   flex-basis: 100%;
   margin-top: 0.1rem;
 }
+
+/* ─── About page ────────────────────────────────────────────────────────── */
+
+/*
+ * Prose wrapper for bio and colophon text — limits line length for readability,
+ * keeps the font/spacing matching the rest of the site without using .prose
+ * (which would introduce Tailwind Typography overrides not needed here).
+ */
+.about-prose {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text);
+  max-width: 65ch;
+}
+
+.about-prose p {
+  margin: 0 0 1em;
+}
+
+.about-prose a {
+  color: var(--accent);
+}
+
+.about-section {
+  margin-top: 2.75rem;
+}
+
+/*
+ * Section headings: system-ui sans-serif to contrast the Georgia body,
+ * matching the prose h2 aesthetic used inside MDX posts.
+ * Gradient hairline below mirrors nav, year headings, and post-header separators.
+ */
+.about-section-heading {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.about-section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/*
+ * Maker imprint: archival House-stamp at the foot of the About page.
+ * "Maker" is the Fremen name for Shai-Hulud; used here as author/creator credit.
+ * Monospace + uppercase + accent name mirrors the classification-stamp aesthetic
+ * of .tag badges and .github-chart-caption.
+ */
+.about-maker {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.about-maker::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.about-maker-label {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.about-maker-name {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Topic interest tags — flex row of existing .tag badges */
+.about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+/* ─── GitHub contribution chart (Transmission Record) ───────────────────── */
+/*
+ * Two <img> elements are rendered: one tinted Fremen cobalt (Atreides / light),
+ * one tinted dried-blood crimson (Harkonnen / dark). CSS mirrors the exact same
+ * pattern used for the Atreides/Harkonnen SVG icon crossfade in the nav.
+ */
+.github-chart-wrapper {
+  margin-top: 0.75rem;
+}
+
+.github-chart-light,
+.github-chart-dark {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  background: var(--code-bg);
+  display: block;
+}
+
+/* Default: light chart visible, dark chart hidden */
+.github-chart-dark {
+  display: none;
+}
+
+/* Explicit dark toggle */
+:root[data-theme="dark"] .github-chart-light {
+  display: none;
+}
+
+:root[data-theme="dark"] .github-chart-dark {
+  display: block;
+}
+
+/* System dark preference (when user hasn't forced light) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .github-chart-light {
+    display: none;
+  }
+
+  :root:not([data-theme="light"]) .github-chart-dark {
+    display: block;
+  }
+}
+
+.github-chart-caption {
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Username rendered in House accent color — Fremen cobalt (Atreides) or dried blood (Harkonnen) */
+.github-chart-caption a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.github-chart-caption a:hover {
+  opacity: 0.75;
+  text-decoration: none;
+}

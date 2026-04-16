@@ -1,36 +1,86 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const topics = ["software", "systems", "mathematics", "writing"];
 ---
 
 <Layout title="About" description="About this blog and its author.">
-  <main class="page-container">
-    <article class="prose">
-      <h1>About</h1>
+  <main class="post-container">
+    <article>
+      <!-- Bio — .prose gives drop cap + Georgia serif reading experience -->
+      <div class="prose">
+        <p>
+          The world might just be a playground simulator, so why not have fun?
+        </p>
+        <blockquote>
+          <p>What I cannot create, I do not understand.</p>
+        </blockquote>
+      </div>
 
-      <p>
-        This is a personal blog for essays, notes, and technical writing.
-        The design prioritises the reading experience above everything else —
-        no popups, no tracking, no clutter. Just text.
-      </p>
+      <!-- Disciplines -->
+      <section class="about-section">
+        <h2 class="about-section-heading">Disciplines</h2>
+        <div class="about-tags">
+          {
+            topics.map((t) => (
+              <a href={`${base}/tags/${t}`} class="tag">
+                {t}
+              </a>
+            ))
+          }
+        </div>
+      </section>
 
-      <h2>Writing here</h2>
+      <!-- Worm Sign -->
+      <section class="about-section">
+        <h2 class="about-section-heading">Worm Sign</h2>
+        <div class="github-chart-wrapper">
+          <img
+            class="github-chart-light"
+            src="https://ghchart.rshah.org/1A4A99/jizhouxu"
+            alt="GitHub contribution calendar for jizhouxu"
+            loading="lazy"
+          />
+          <img
+            class="github-chart-dark"
+            src="https://ghchart.rshah.org/8C1220/jizhouxu"
+            alt="GitHub contribution calendar for jizhouxu"
+            loading="lazy"
+          />
+          <p class="github-chart-caption">
+            <a
+              href="https://github.com/jizhouxu"
+              target="_blank"
+              rel="noopener noreferrer">jizhouxu</a
+            > · github.com
+          </p>
+        </div>
+      </section>
 
-      <p>
-        Posts cover whatever I find interesting: software, systems, mathematics,
-        and occasionally things that resist easy categorisation.
-      </p>
+      <!-- Colophon -->
+      <section class="about-section">
+        <h2 class="about-section-heading">Colophon</h2>
+        <div class="about-prose">
+          <p>
+            Built with <a href="https://astro.build">Astro</a>, styled with{" "}
+            <a href="https://tailwindcss.com">Tailwind CSS v4</a>, and deployed
+            on <a href="https://vercel.com">Vercel</a>. Body text is set in
+            Georgia. Headings use the system sans-serif stack. Math is rendered
+            with{" "}
+            <a href="https://katex.org">KaTeX</a>. Code is highlighted at build
+            time with <a href="https://shiki.style">Shiki</a> (dual light/dark theme).
+            The theme toggle ships a small inline script; everything else is CSS-only.
+          </p>
+        </div>
+      </section>
+      <!-- Maker -->
+      <div class="about-maker">
+        <span class="about-maker-label">Maker</span>
+        <span class="about-maker-name">Jizhou Xu</span>
+      </div>
 
-      <h2>Colophon</h2>
-
-      <p>
-        Built with <a href="https://astro.build">Astro</a>, styled with{' '}
-        <a href="https://tailwindcss.com">Tailwind CSS v4</a>, and deployed
-        via GitHub Pages. Body text is set in Georgia. Headings use the system
-        sans-serif stack. Math is rendered with{' '}
-        <a href="https://katex.org">KaTeX</a>. Code is highlighted at build
-        time with <a href="https://shiki.style">Shiki</a>. The theme toggle
-        ships a small inline script; everything else is CSS-only.
-      </p>
     </article>
   </main>
 </Layout>
